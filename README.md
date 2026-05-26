@@ -72,46 +72,45 @@ npm test
 
 Requires backend (`:5000`) and frontend (`:4200`) running, or uses `reuseExistingServer` when already up.
 
-## Deploy on Vercel (monorepo — one project)
+## Deploy on Vercel (recommended — two projects, one repo)
 
-Use **one** Vercel project with root directory `./`.
+Use **two** Vercel projects from the **same GitHub repo**. No separate repos needed.
 
-**Important:** Set **Framework Preset** to **Other** (not Services). Root `vercel.json` handles routing.
+### Project 1 — Backend API
 
-| Path | Handler |
-|------|---------|
-| `/`, `/login`, `/browse`, … | Angular static build |
-| `/api/v1/...` | Express API (`api/index.js` → `backend`) |
+| Setting | Value |
+|---------|--------|
+| **Root Directory** | `backend` |
+| **Framework Preset** | **Other** |
+| **Build Command** | leave empty |
+| **Output Directory** | leave empty |
+| **Install Command** | leave empty (uses `backend/vercel.json`) |
 
-### Steps
+**Environment variables:** `MONGODB_URI`, `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `JWT_ACCESS_EXPIRES_IN`, `JWT_REFRESH_EXPIRES_IN`, `FRONTEND_URL`, `NODE_ENV=production`
 
-1. Import `Samrat880/FletNix` on Vercel.
-2. **Root Directory:** `./`
-3. **Framework Preset:** **Other**
-4. Add **Environment Variables**:
+Test: `https://YOUR-API.vercel.app/api/v1/health`
 
-   | Variable | Value |
-   |----------|--------|
-   | `MONGODB_URI` | Atlas connection string |
-   | `JWT_ACCESS_SECRET` | min 32 characters |
-   | `JWT_REFRESH_SECRET` | min 32 characters |
-   | `JWT_ACCESS_EXPIRES_IN` | `15m` |
-   | `JWT_REFRESH_EXPIRES_IN` | `7d` |
-   | `FRONTEND_URL` | your Vercel URL, e.g. `https://flet-nix.vercel.app` |
-   | `NODE_ENV` | `production` |
+### Project 2 — Frontend
 
-5. Deploy.
-6. Test API: `https://YOUR-APP.vercel.app/api/v1/health`
-7. Test app: `https://YOUR-APP.vercel.app`
+| Setting | Value |
+|---------|--------|
+| **Root Directory** | `frontend` |
+| **Framework Preset** | **Angular** |
+| **Build Command** | `npm run build` |
+| **Output Directory** | `dist/frontend/browser` |
+| **Install Command** | leave empty (uses `frontend/vercel.json`) |
 
-Production frontend uses `/api/v1` (same domain).
+Update `frontend/src/environments/environment.prod.ts`:
 
-### Alternative: two separate Vercel projects
+```ts
+apiUrl: 'https://YOUR-API.vercel.app/api/v1'
+```
 
-| Project | Root directory | Notes |
-|---------|----------------|--------|
-| API | `backend` | Set full API URL in `environment.prod.ts` |
-| Web | `frontend` | Build: `npm run build`, output: `dist/frontend/browser` |
+Then push → frontend redeploys. Set `FRONTEND_URL` on the backend to your frontend URL.
+
+### Alternative: one project (monorepo)
+
+Requires root `vercel.json` + Framework Preset **Other**. More config; use only if you need a single URL.
 
 ## OAuth2 SSO (interview demo)
 
