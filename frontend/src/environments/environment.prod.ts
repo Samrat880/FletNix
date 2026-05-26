@@ -1,5 +1,4 @@
 export const environment = {
   production: true,
-  // Same-origin API when deployed as Vercel monorepo (backend routePrefix: /api)
-  apiUrl: '/api/v1',
+  apiUrl: 'https://flet-nix-six.vercel.app/api/v1',
 };
