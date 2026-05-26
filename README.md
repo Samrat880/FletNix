@@ -74,19 +74,21 @@ Requires backend (`:5000`) and frontend (`:4200`) running, or uses `reuseExistin
 
 ## Deploy on Vercel (monorepo — one project)
 
-Use **one** Vercel project with root directory `./` (repo root). The root `vercel.json` deploys both services:
+Use **one** Vercel project with root directory `./` (repo root).
 
-| Service  | Folder     | Routes        |
-|----------|------------|---------------|
-| Frontend | `frontend` | `/`           |
-| Backend  | `backend`  | `/api/v1/...` |
+**Important:** Set **Framework Preset** to **Other** (not Services). Root `vercel.json` handles routing.
+
+| Path | Handler |
+|------|---------|
+| `/`, `/login`, `/browse`, … | Angular static build |
+| `/api/v1/...` | Express API (`api/index.js` → `backend`) |
 
 ### Steps
 
 1. Import `Samrat880/FletNix` on Vercel.
-2. **Application Preset:** Services (or keep root `./`).
-3. Ensure root `vercel.json` exists in the repo (already included).
-4. Add **Environment Variables** (Project Settings):
+2. **Root Directory:** `./`
+3. **Framework Preset:** **Other**
+4. Add **Environment Variables**:
 
    | Variable | Value |
    |----------|--------|
@@ -98,11 +100,11 @@ Use **one** Vercel project with root directory `./` (repo root). The root `verce
    | `FRONTEND_URL` | your Vercel URL, e.g. `https://flet-nix.vercel.app` |
    | `NODE_ENV` | `production` |
 
-5. Click **Deploy**.
+5. Deploy.
 6. Test API: `https://YOUR-APP.vercel.app/api/v1/health`
-7. Open app: `https://YOUR-APP.vercel.app`
+7. Test app: `https://YOUR-APP.vercel.app`
 
-Production frontend uses relative API URL `/api/v1` (same domain — no CORS issues).
+Production frontend uses `/api/v1` (same domain).
 
 ### Alternative: two separate Vercel projects
 
