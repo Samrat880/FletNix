@@ -72,18 +72,44 @@ npm test
 
 Requires backend (`:5000`) and frontend (`:4200`) running, or uses `reuseExistingServer` when already up.
 
-## Deploy on Vercel
+## Deploy on Vercel (monorepo — one project)
 
-Create **two** Vercel projects from this repo:
+Use **one** Vercel project with root directory `./` (repo root). The root `vercel.json` deploys both services:
 
-| Project | Root directory | Build | Output |
-|---------|----------------|-------|--------|
-| API | `backend` | — | Serverless (`api/index.js`) |
-| Web | `frontend` | `npm run build` | `dist/frontend/browser` |
+| Service  | Folder     | Routes        |
+|----------|------------|---------------|
+| Frontend | `frontend` | `/`           |
+| Backend  | `backend`  | `/api/v1/...` |
 
-**Backend env vars:** `MONGODB_URI`, `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `FRONTEND_URL`, `CLIENT_URL`, `EMAIL_DEV_MODE` or SMTP/Mailtrap.
+### Steps
 
-**Frontend:** Update `frontend/src/environments/environment.prod.ts` with your API URL.
+1. Import `Samrat880/FletNix` on Vercel.
+2. **Application Preset:** Services (or keep root `./`).
+3. Ensure root `vercel.json` exists in the repo (already included).
+4. Add **Environment Variables** (Project Settings):
+
+   | Variable | Value |
+   |----------|--------|
+   | `MONGODB_URI` | Atlas connection string |
+   | `JWT_ACCESS_SECRET` | min 32 characters |
+   | `JWT_REFRESH_SECRET` | min 32 characters |
+   | `JWT_ACCESS_EXPIRES_IN` | `15m` |
+   | `JWT_REFRESH_EXPIRES_IN` | `7d` |
+   | `FRONTEND_URL` | your Vercel URL, e.g. `https://flet-nix.vercel.app` |
+   | `NODE_ENV` | `production` |
+
+5. Click **Deploy**.
+6. Test API: `https://YOUR-APP.vercel.app/api/v1/health`
+7. Open app: `https://YOUR-APP.vercel.app`
+
+Production frontend uses relative API URL `/api/v1` (same domain — no CORS issues).
+
+### Alternative: two separate Vercel projects
+
+| Project | Root directory | Notes |
+|---------|----------------|--------|
+| API | `backend` | Set full API URL in `environment.prod.ts` |
+| Web | `frontend` | Build: `npm run build`, output: `dist/frontend/browser` |
 
 ## OAuth2 SSO (interview demo)
 
