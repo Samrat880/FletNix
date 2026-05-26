@@ -74,20 +74,20 @@ Requires backend (`:5000`) and frontend (`:4200`) running, or uses `reuseExistin
 
 ## Deploy on Vercel (monorepo — one project)
 
-Use **one** Vercel project with root directory `./` and **Framework Preset: Services**.
+Use **one** Vercel project with root directory `./`.
 
-Root `vercel.json` declares both services:
+**Important:** Set **Framework Preset** to **Other** (not Services). Root `vercel.json` handles routing.
 
-| Service  | Folder     | Routes        |
-|----------|------------|---------------|
-| Frontend | `frontend` | `/`           |
-| Backend  | `backend`  | `/api/v1/...` |
+| Path | Handler |
+|------|---------|
+| `/`, `/login`, `/browse`, … | Angular static build |
+| `/api/v1/...` | Express API (`api/index.js` → `backend`) |
 
 ### Steps
 
 1. Import `Samrat880/FletNix` on Vercel.
 2. **Root Directory:** `./`
-3. **Framework Preset:** **Services**
+3. **Framework Preset:** **Other**
 4. Add **Environment Variables**:
 
    | Variable | Value |
