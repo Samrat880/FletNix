@@ -1,0 +1,45 @@
+<div class="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-8">
+  <div class="absolute inset-0 bg-[radial-gradient(circle_at_15%_15%,rgba(229,9,20,0.2),transparent_36%),radial-gradient(circle_at_80%_85%,rgba(124,58,237,0.2),transparent_36%)]"></div>
+
+  <div class="glass-panel relative z-10 w-full max-w-md rounded-2xl p-8 shadow-panel">
+    <p class="mb-2 text-xs uppercase tracking-[0.24em] text-fletnix-muted">Start Watching</p>
+    <h1 class="heading-font text-4xl font-semibold text-white" data-testid="register-title">Join FletNix</h1>
+    <p class="mt-2 text-sm text-fletnix-muted">Create your account in under a minute.</p>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="mt-7 space-y-4">
+      <div class="space-y-1.5">
+        <label class="text-sm text-fletnix-muted">Name (optional)</label>
+        <input type="text" formControlName="name" class="w-full rounded-xl border border-fletnix-line bg-fletnix-dark/70 px-4 py-3 text-sm text-white outline-none transition focus:border-fletnix-red focus:shadow-glow" />
+      </div>
+
+      <div class="space-y-1.5">
+        <label class="text-sm text-fletnix-muted">Email</label>
+        <input type="email" formControlName="email" data-testid="register-email" class="w-full rounded-xl border border-fletnix-line bg-fletnix-dark/70 px-4 py-3 text-sm text-white outline-none transition focus:border-fletnix-red focus:shadow-glow" />
+      </div>
+
+      <div class="space-y-1.5">
+        <label class="text-sm text-fletnix-muted">Password</label>
+        <input type="password" formControlName="password" data-testid="register-password" class="w-full rounded-xl border border-fletnix-line bg-fletnix-dark/70 px-4 py-3 text-sm text-white outline-none transition focus:border-fletnix-red focus:shadow-glow" />
+      </div>
+
+      <div class="space-y-1.5">
+        <label class="text-sm text-fletnix-muted">Age</label>
+        <input type="number" formControlName="age" data-testid="register-age" class="w-full rounded-xl border border-fletnix-line bg-fletnix-dark/70 px-4 py-3 text-sm text-white outline-none transition focus:border-fletnix-red focus:shadow-glow" />
+        <p class="text-xs text-fletnix-muted">Users under 18 cannot see R-rated titles.</p>
+      </div>
+
+      @if (error) {
+        <p class="rounded-lg border border-red-500/35 bg-red-500/10 px-3 py-2 text-sm text-red-300">{{ error }}</p>
+      }
+
+      <button type="submit" [disabled]="loading || form.invalid" data-testid="register-submit" class="w-full rounded-xl bg-fletnix-red py-3 text-sm font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50">
+        {{ loading ? 'Creating...' : 'Create Account' }}
+      </button>
+    </form>
+
+    <p class="mt-5 text-center text-sm text-fletnix-muted">
+      Already have an account?
+      <a routerLink="/login" class="font-medium text-fletnix-red hover:text-fletnix-redSoft">Sign in</a>
+    </p>
+  </div>
+</div>

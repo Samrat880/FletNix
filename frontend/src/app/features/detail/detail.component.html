@@ -1,0 +1,86 @@
+<div class="min-h-screen bg-fletnix-ink text-white">
+  @if (loading) {
+    <p class="py-24 text-center text-fletnix-muted">Loading...</p>
+  } @else if (error) {
+    <div class="mx-auto max-w-3xl px-4 py-24 text-center">
+      <p class="text-red-300">{{ error }}</p>
+      <a routerLink="/browse" class="mt-4 inline-block text-sm text-fletnix-muted hover:text-white">Back to Browse</a>
+    </div>
+  } @else if (show) {
+    <section class="relative min-h-[78vh] overflow-hidden" data-testid="show-detail">
+      <div class="absolute inset-0 bg-gradient-to-br {{ heroGradient() }}"></div>
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_75%_15%,rgba(229,9,20,0.35),transparent_42%)]"></div>
+      <div class="absolute inset-0 bg-gradient-to-r from-black/90 via-black/55 to-black/25"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-[#06070f] via-black/20 to-black/40"></div>
+
+      <header class="relative z-10 flex items-center justify-between px-4 py-5 sm:px-8">
+        <a routerLink="/browse" class="heading-font text-2xl font-semibold text-fletnix-red sm:text-3xl">FletNix</a>
+
+        <nav class="hidden items-center gap-6 text-xs uppercase tracking-[0.16em] text-gray-300 md:flex">
+          <a routerLink="/browse" class="hover:text-white">Home</a>
+          <a routerLink="/browse" [queryParams]="{ type: 'Movie' }" class="hover:text-white">Movies</a>
+          <a routerLink="/browse" [queryParams]="{ type: 'TV Show' }" class="hover:text-white">TV Shows</a>
+        </nav>
+
+        <div class="flex items-center gap-3">
+          <div class="flex h-9 w-9 items-center justify-center rounded-full bg-fletnix-red text-xs font-semibold">{{ userInitials() }}</div>
+          <button (click)="logout()" class="hidden text-sm text-fletnix-muted hover:text-white sm:inline">Logout</button>
+        </div>
+      </header>
+
+      <div class="relative z-10 mx-auto flex max-w-6xl flex-col justify-end px-4 pb-16 pt-24 sm:px-8 sm:pb-20">
+        <p class="text-xs uppercase tracking-[0.2em] text-fletnix-muted">{{ show.type }}</p>
+        <h1 class="heading-font mt-3 max-w-4xl text-5xl font-semibold leading-none sm:text-7xl" data-testid="detail-title">{{ show.title }}</h1>
+
+        <div class="mt-5 flex flex-wrap items-center gap-3 text-sm text-gray-200">
+          @if (show.rating) {
+            <span class="rounded bg-white/10 px-2.5 py-1 text-xs">{{ show.rating }}</span>
+          }
+          @if (show.duration) {
+            <span>{{ show.duration }}</span>
+          }
+          @if (show.release_year) {
+            <span>{{ show.release_year }}</span>
+          }
+          @if (show.country) {
+            <span>{{ show.country }}</span>
+          }
+        </div>
+
+        @if (synopsis()) {
+          <p class="mt-6 max-w-2xl text-sm leading-7 text-gray-200 sm:text-base">{{ synopsis() }}</p>
+        }
+
+        <div class="mt-8 flex flex-wrap items-center gap-3">
+          <button type="button" (click)="scrollToDetails()" class="inline-flex items-center gap-2 rounded bg-fletnix-red px-6 py-2.5 text-sm font-semibold">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+            More details
+          </button>
+          <a routerLink="/browse" class="inline-flex items-center gap-2 rounded bg-white/15 px-5 py-2.5 text-sm transition hover:bg-white/25" data-testid="back-to-browse">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            Back to Browse
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="show-details" class="mx-auto max-w-6xl px-4 py-10 sm:px-8">
+      <h2 class="heading-font text-2xl font-semibold">More information</h2>
+
+      @if (fields().length) {
+        <dl class="mt-6 divide-y divide-white/10">
+          @for (f of fields(); track f.label) {
+            <div class="grid gap-2 py-4 sm:grid-cols-[180px_1fr]">
+              <dt class="text-xs uppercase tracking-[0.16em] text-fletnix-muted">{{ f.label }}</dt>
+              <dd class="text-sm leading-relaxed text-gray-100">{{ f.value }}</dd>
+            </div>
+          }
+        </dl>
+      } @else {
+        <p class="mt-4 text-sm text-fletnix-muted">No additional metadata available for this title.</p>
+      }
+    </section>
+  }
+</div>

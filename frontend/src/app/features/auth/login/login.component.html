@@ -1,0 +1,52 @@
+<div class="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-8">
+  <div class="absolute inset-0 bg-[radial-gradient(circle_at_10%_10%,rgba(229,9,20,0.2),transparent_35%),radial-gradient(circle_at_85%_90%,rgba(37,99,235,0.18),transparent_32%)]"></div>
+
+  <div class="glass-panel relative z-10 w-full max-w-md rounded-2xl p-8 shadow-panel">
+    <p class="mb-2 text-xs uppercase tracking-[0.24em] text-fletnix-muted">Welcome Back</p>
+    <h1 class="heading-font text-4xl font-semibold text-white" data-testid="login-title">FletNix</h1>
+    <p class="mt-2 text-sm text-fletnix-muted">Sign in to discover what to watch tonight.</p>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="mt-7 space-y-4">
+      <div class="space-y-1.5">
+        <label class="text-sm text-fletnix-muted">Email</label>
+        <input
+          type="email"
+          formControlName="email"
+          data-testid="login-email"
+          class="w-full rounded-xl border border-fletnix-line bg-fletnix-dark/70 px-4 py-3 text-sm text-white outline-none transition focus:border-fletnix-red focus:shadow-glow"
+        />
+      </div>
+
+      <div class="space-y-1.5">
+        <label class="text-sm text-fletnix-muted">Password</label>
+        <input
+          type="password"
+          formControlName="password"
+          data-testid="login-password"
+          class="w-full rounded-xl border border-fletnix-line bg-fletnix-dark/70 px-4 py-3 text-sm text-white outline-none transition focus:border-fletnix-red focus:shadow-glow"
+        />
+      </div>
+
+      @if (success) {
+        <p class="rounded-lg border border-emerald-500/35 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-300" data-testid="login-success">{{ success }}</p>
+      }
+      @if (error) {
+        <p class="rounded-lg border border-red-500/35 bg-red-500/10 px-3 py-2 text-sm text-red-300" data-testid="login-error">{{ error }}</p>
+      }
+
+      <button
+        type="submit"
+        [disabled]="loading || form.invalid"
+        data-testid="login-submit"
+        class="w-full rounded-xl bg-fletnix-red py-3 text-sm font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        {{ loading ? 'Signing in...' : 'Sign In' }}
+      </button>
+    </form>
+
+    <p class="mt-5 text-center text-sm text-fletnix-muted">
+      New here?
+      <a routerLink="/register" class="font-medium text-fletnix-red hover:text-fletnix-redSoft">Create account</a>
+    </p>
+  </div>
+</div>

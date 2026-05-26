@@ -1,0 +1,25 @@
+<a [routerLink]="['/show', show._id]" class="group block" data-testid="show-card">
+  <div class="relative aspect-[16/10] overflow-hidden rounded-lg bg-gradient-to-br {{ gradientClasses() }} transition duration-300 group-hover:scale-[1.03] group-hover:brightness-110">
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.14),transparent_55%)]"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 transition group-hover:opacity-100"></div>
+
+    <div class="absolute inset-0 flex items-center justify-center opacity-0 transition group-hover:opacity-100">
+      <span class="flex h-11 w-11 items-center justify-center rounded-full bg-white/90 text-black shadow-lg">
+        <svg class="ml-0.5 h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+      </span>
+    </div>
+  </div>
+
+  <div class="mt-2.5">
+    <h3 class="heading-font line-clamp-1 text-sm font-medium text-white sm:text-base">{{ show.title }}</h3>
+    <p class="mt-1 text-xs text-fletnix-muted">
+      {{ show.type }}
+      @if (show.release_year) {
+        <span> &middot; {{ show.release_year }}</span>
+      }
+      @if (show.rating) {
+        <span class="{{ ratingClasses() }}"> &middot; {{ show.rating }}</span>
+      }
+    </p>
+  </div>
+</a>

@@ -1,0 +1,51 @@
+<div class="flex flex-col items-center gap-3" data-testid="pagination">
+  <div class="inline-flex items-center gap-2 rounded-2xl border border-fletnix-line bg-fletnix-panel/70 px-3 py-2">
+    <button
+      (click)="go(page - 1)"
+      [disabled]="page <= 1"
+      class="flex h-9 w-9 items-center justify-center rounded-full border border-fletnix-line text-fletnix-muted transition hover:border-fletnix-red hover:text-white disabled:opacity-35"
+      data-testid="pagination-prev"
+      aria-label="Previous page"
+    >
+      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
+
+    @for (p of pages(); track p) {
+      <button
+        (click)="go(p)"
+        [class.bg-fletnix-red]="p === page"
+        [class.text-white]="p === page"
+        class="h-9 w-9 rounded-full text-sm text-fletnix-muted transition hover:bg-fletnix-card"
+        [attr.data-testid]="'pagination-page-' + p"
+      >
+        {{ p }}
+      </button>
+    }
+
+    @if (totalPages > 5 && page < totalPages - 2) {
+      <span class="px-1 text-sm text-fletnix-muted">...</span>
+      <button
+        (click)="go(totalPages)"
+        class="h-9 min-w-9 rounded-full px-2 text-sm text-fletnix-muted transition hover:bg-fletnix-card"
+      >
+        {{ totalPages }}
+      </button>
+    }
+
+    <button
+      (click)="go(page + 1)"
+      [disabled]="page >= totalPages"
+      class="flex h-9 w-9 items-center justify-center rounded-full border border-fletnix-line text-fletnix-muted transition hover:border-fletnix-red hover:text-white disabled:opacity-35"
+      data-testid="pagination-next"
+      aria-label="Next page"
+    >
+      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M9 18l6-6-6-6" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
+  </div>
+
+  <p class="text-xs text-fletnix-muted">Page {{ page }} of {{ totalPages }}</p>
+</div>

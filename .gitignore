@@ -69,6 +69,12 @@ web_modules/
 .env
 .env.*
 !.env.example
+backend/.env
+backend/.env.*
+!backend/.env.example
+
+# Large assignment CSV (download separately)
+backend/src/scripts/netflix_titles.csv
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
