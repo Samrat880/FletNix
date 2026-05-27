@@ -23,6 +23,8 @@ const authenticate = async ( req, res, next) => {
         name: user.name,
         email: user.email,
         age,
+        favoriteGenres: user.favoriteGenres || [],
+        preferencesCompleted: user.preferencesCompleted ?? false,
     };
     next();
 };

@@ -1,67 +1,231 @@
 # FletNix
 
-**What to watch** — Search and filter Netflix catalog data with JWT auth, age restrictions, and optional OAuth2 SSO.
+**What to watch** — A Netflix-style streaming catalog with JWT authentication, age-based content filtering, search.
+
+Built as a full-stack monorepo: **Angular 17** frontend, **Express + MongoDB** backend, deployed on **Vercel**.
+
+---
+
+## Live demo
+
+| App | URL |
+|-----|-----|
+| **Web app** | [https://flet-nix-a9xe.vercel.app](https://flet-nix-a9xe.vercel.app) |
+| **API health** | [https://flet-nix-six.vercel.app/api/v1/health](https://flet-nix-six.vercel.app/api/v1/health) |
+| **GitHub** | [https://github.com/Samrat880/FletNix](https://github.com/Samrat880/FletNix) |
+
+### Demo account
+
+Use these credentials to sign in without registering:
+
+| Field | Value |
+|-------|-------|
+| **Email** | `samrat@gmail.com` |
+| **Password** | `Test1234` |
+
+After login you can browse movies & TV shows, search, filter, and open detail pages.
+
+**Note:** On first login (including the demo account), you will be asked to pick favorite genres before browsing.
+
+---
+
+## Features
+
+### Authentication & authorization
+- Register and login with email, password, and age
+- Passwords hashed with **bcrypt**
+- **JWT** access tokens + httpOnly refresh token cookies
+- Protected routes — browse and detail pages require login
+- Users **under 18** do not see **R-rated** titles (enforced on the API)
+
+### Genre preference onboarding
+- After login, users without saved preferences are sent to `/preferences`
+- Pick **1–10 genres** from Netflix catalog categories (`listed_in` tags)
+- Choices are saved on the user profile (`favoriteGenres`)
+- A **"Picked for you"** row at the top surfaces genre matches; the full catalog (~8806 titles) remains browsable below
+- Search scans all titles; a single match opens the detail page directly
+- Returning users with completed preferences go straight to `/browse`
+
+### Catalog browsing
+- Paginated catalog (**15 items per page**)
+- Search by **title** and **cast**
+- Filter by type (Movie / TV Show), country, year, language, and rating
+- Netflix-style browse UI with hero carousel, sidebar navigation, and detail pages
+- Responsive layout with **Tailwind CSS**
+
+### Optional extras
+- **OAuth2 SSO** (Authorization Code + PKCE) — see [oauth module docs](backend/src/modules/oauth/README.md)
+- **Playwright E2E** tests in `e2e/`
+- **MongoDB Atlas** seed script for ~8,800 Netflix titles
+
+---
+
+## Tech stack
+
+| Layer | Technology |
+|-------|------------|
+| Frontend | Angular 17, Tailwind CSS, RxJS |
+| Backend | Node.js, Express 5, Mongoose |
+| Database | MongoDB Atlas |
+| Auth | JWT, bcrypt, httpOnly cookies |
+| Testing | Playwright |
+| Hosting | Vercel (two projects, one repo) |
+
+---
 
 ## Project structure
 
 ```
-├── backend/       Express API + MongoDB
-├── frontend/      Angular 17 + Tailwind
-├── e2e/           Playwright tests
-├── oauth-demo/    SSO demo client (Live Server on port 5500)
+FletNix/
+├── backend/                 # Express REST API
+│   ├── api/index.js         # Vercel serverless entry
+│   ├── src/
+│   │   ├── modules/
+│   │   │   ├── auth/        # Register, login, JWT refresh
+│   │   │   ├── shows/       # Catalog, search, filters
+│   │   │   └── oauth/       # OAuth2 SSO (PKCE)
+│   │   ├── common/          # DB, email, JWT utils
+│   │   └── scripts/         # CSV seed script
+│   └── vercel.json
+├── frontend/                # Angular SPA
+│   ├── src/app/
+│   │   ├── features/        # login, register, browse, detail
+│   │   ├── core/            # guards, interceptors, services
+│   │   └── shared/          # show cards, pagination
+│   └── vercel.json
+├── e2e/                     # Playwright tests
+├── oauth-demo/              # OAuth SSO demo client
 └── README.md
 ```
 
-## Prerequisites
+---
 
-- Node.js 18+
-- MongoDB (Docker or Atlas)
-- `netflix_titles.csv` — place at `backend/src/scripts/netflix_titles.csv` (a 20-row sample is included for dev; replace with the full assignment file for production)
+## Quick start (local)
 
-## Local setup
+### Prerequisites
 
-### Backend
+- **Node.js 18+**
+- **MongoDB** — Docker locally or [MongoDB Atlas](https://www.mongodb.com/atlas) (free tier)
+- **CSV data** — place `netflix_titles.csv` at `backend/src/scripts/netflix_titles.csv`
+
+### 1. Backend
 
 ```bash
 cd backend
 cp .env.example .env
-# Set MONGODB_URI, JWT_ACCESS_SECRET, JWT_REFRESH_SECRET
-
-npm install
-npm run seed     # import CSV (requires netflix_titles.csv)
-npm run dev      # http://localhost:5000
 ```
 
-### Frontend
+Edit `.env` — at minimum set:
+
+```env
+MONGODB_URI=mongodb+srv://...
+JWT_ACCESS_SECRET=your-secret-min-32-characters-long
+JWT_REFRESH_SECRET=your-secret-min-32-characters-long
+JWT_ACCESS_EXPIRES_IN=15m
+JWT_REFRESH_EXPIRES_IN=7d
+FRONTEND_URL=http://localhost:4200
+```
+
+Then:
+
+```bash
+npm install
+npm run seed          # one-time CSV import
+npm run dev           # http://localhost:5000
+```
+
+Verify: [http://localhost:5000/api/v1/health](http://localhost:5000/api/v1/health)
+
+### 2. Frontend
 
 ```bash
 cd frontend
 npm install
-npm start        # http://localhost:4200
+npm start             # http://localhost:4200
 ```
 
-### Auth flow
+### 3. Try it
 
-1. Register at `/register` with email, password, and age.
-2. Sign in at `/login` (no email verification required).
+1. Open [http://localhost:4200](http://localhost:4200)
+2. Register a new account **or** use the demo credentials above
+3. Browse, search, filter, and open a show detail page
 
-Users under **18** do not receive **R-rated** titles (enforced on the API).
-
-See [WORK_PLAN.md](WORK_PLAN.md) for step-by-step tasks.
+---
 
 ## API reference
 
-| Method | Path | Auth |
-|--------|------|------|
-| POST | `/api/v1/auth/register` | No |
-| POST | `/api/v1/auth/login` | No |
-| GET | `/api/v1/shows?page=1&limit=15&type=Movie&search=matrix` | Bearer JWT |
-| GET | `/api/v1/shows/:id` | Bearer JWT |
-| GET | `/api/v1/oauth/authorize` | Bearer JWT (SSO) |
-| POST | `/api/v1/oauth/token` | Client credentials + PKCE |
-| GET | `/api/v1/oauth/userinfo` | Bearer JWT |
+Base URL (production): `https://flet-nix-six.vercel.app/api/v1`
 
-## E2E tests (Playwright)
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| `POST` | `/auth/register` | No | Create account |
+| `POST` | `/auth/login` | No | Login, returns access token |
+| `PUT` | `/auth/preferences` | Bearer | Save favorite genres (onboarding) |
+| `POST` | `/auth/refresh` | Cookie | Refresh access token |
+| `POST` | `/auth/logout` | Bearer | Logout |
+| `GET` | `/auth/me` | Bearer | Current user profile |
+| `GET` | `/shows` | Bearer | Paginated catalog |
+| `GET` | `/shows/meta` | Bearer | Filter options (countries, years, etc.) |
+| `GET` | `/shows/:id` | Bearer | Show detail |
+| `GET` | `/health` | No | API status check |
+
+### Shows query parameters
+
+| Param | Example | Description |
+|-------|---------|-------------|
+| `page` | `1` | Page number |
+| `limit` | `15` | Items per page |
+| `type` | `Movie` | Filter by Movie or TV Show |
+| `search` | `matrix` | Search title and cast |
+| `country` | `United States` | Filter by country |
+| `release_year` | `2020` | Filter by year |
+| `language` | `English` | Filter by language |
+| `rating` | `PG-13` | Filter by rating |
+
+---
+
+## Deploy on Vercel
+
+The live app uses **two Vercel projects** from the **same GitHub repo** (no separate repos needed).
+
+### Backend (`flet-nix-six`)
+
+| Setting | Value |
+|---------|--------|
+| Root Directory | `backend` |
+| Framework Preset | **Other** |
+| Build / Output / Install | leave empty |
+
+**Environment variables:**
+
+| Variable | Example |
+|----------|---------|
+| `MONGODB_URI` | Atlas connection string |
+| `JWT_ACCESS_SECRET` | min 32 characters |
+| `JWT_REFRESH_SECRET` | min 32 characters |
+| `JWT_ACCESS_EXPIRES_IN` | `15m` |
+| `JWT_REFRESH_EXPIRES_IN` | `7d` |
+| `FRONTEND_URL` | `https://flet-nix-a9xe.vercel.app` |
+| `NODE_ENV` | `production` |
+
+### Frontend (`flet-nix-a9xe`)
+
+| Setting | Value |
+|---------|--------|
+| Root Directory | `frontend` |
+| Framework Preset | **Angular** |
+| Build Command | `npm run build` |
+| Output Directory | `dist/frontend/browser` |
+
+Production API URL is set in `frontend/src/environments/environment.prod.ts`:
+
+```ts
+apiUrl: 'https://flet-nix-six.vercel.app/api/v1'
+```
+
+---
+
+## E2E tests
 
 ```bash
 cd e2e
@@ -70,67 +234,39 @@ npx playwright install chromium
 npm test
 ```
 
-Requires backend (`:5000`) and frontend (`:4200`) running, or uses `reuseExistingServer` when already up.
+Requires backend (`:5000`) and frontend (`:4200`) running locally.
 
-## Deploy on Vercel (recommended — two projects, one repo)
+---
 
-Use **two** Vercel projects from the **same GitHub repo**. No separate repos needed.
+## OAuth2 SSO demo
 
-### Project 1 — Backend API
+FletNix can act as an **identity provider** for third-party apps using Authorization Code + PKCE.
 
-| Setting | Value |
-|---------|--------|
-| **Root Directory** | `backend` |
-| **Framework Preset** | **Other** |
-| **Build Command** | leave empty |
-| **Output Directory** | leave empty |
-| **Install Command** | leave empty (uses `backend/vercel.json`) |
+1. Start backend and frontend locally
+2. Serve `oauth-demo/` on port 5500 (VS Code Live Server)
+3. Login to FletNix and paste your access token
+4. Click **Sign in with FletNix**
 
-**Environment variables:** `MONGODB_URI`, `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `JWT_ACCESS_EXPIRES_IN`, `JWT_REFRESH_EXPIRES_IN`, `FRONTEND_URL`, `NODE_ENV=production`
+Full details: [backend/src/modules/oauth/README.md](backend/src/modules/oauth/README.md)
 
-Test: `https://YOUR-API.vercel.app/api/v1/health`
+---
 
-### Project 2 — Frontend
+## Assignment rubric coverage
 
-| Setting | Value |
-|---------|--------|
-| **Root Directory** | `frontend` |
-| **Framework Preset** | **Angular** |
-| **Build Command** | `npm run build` |
-| **Output Directory** | `dist/frontend/browser` |
-| **Install Command** | leave empty (uses `frontend/vercel.json`) |
+| Requirement | Status |
+|-------------|--------|
+| Authentication (email, password, age, bcrypt, JWT) | Done |
+| Genre preference onboarding + personalized browse | Done |
+| Paginated list (15 per page) | Done |
+| Search (title + cast) | Done |
+| Age restriction (no R for under 18) | Done |
+| Filter by type (Movie / TV Show) | Done |
+| Detail page (all metadata fields) | Done |
+| Tailwind responsive UI | Done |
+| Playwright E2E tests | Done |
+| Hosted on Vercel | Done |
 
-Update `frontend/src/environments/environment.prod.ts`:
-
-```ts
-apiUrl: 'https://YOUR-API.vercel.app/api/v1'
-```
-
-Then push → frontend redeploys. Set `FRONTEND_URL` on the backend to your frontend URL.
-
-### Alternative: one project (monorepo)
-
-Requires root `vercel.json` + Framework Preset **Other**. More config; use only if you need a single URL.
-
-## OAuth2 SSO (interview demo)
-
-See [backend/src/modules/oauth/README.md](backend/src/modules/oauth/README.md).
-
-1. Serve `oauth-demo/` on port 5500 (VS Code Live Server).
-2. Login to FletNix and paste your access token.
-3. Click **Sign in with FletNix** to complete the PKCE flow.
-
-## Rubric coverage
-
-- Authentication (email, password, age, bcrypt, JWT)
-- Paginated list (15 per page)
-- Search (title + cast)
-- Age restriction (no R for under 18)
-- Filter by type (Movie / TV Show)
-- Detail page (all fields)
-- Tailwind responsive UI
-- Playwright E2E
-- Hosting-ready (Vercel config)
+---
 
 ## License
 

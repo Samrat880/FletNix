@@ -125,85 +125,105 @@
         </div>
       </header>
 
-      @if (activeHero(); as hero) {
-        <section
-          class="relative mb-6 overflow-hidden rounded-2xl"
-          (mouseenter)="pauseHero()"
-          (mouseleave)="resumeHero()"
-          data-testid="hero-carousel"
-        >
-          <div class="absolute inset-0 bg-gradient-to-r {{ heroGradient(hero) }}"></div>
-          <div class="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(229,9,20,0.35),transparent_45%)]"></div>
-          <div class="absolute inset-0 bg-gradient-to-r from-black/85 via-black/55 to-black/20"></div>
-          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30"></div>
+      @if (!isSearching()) {
+        @if (activeHero(); as hero) {
+          <section
+            class="relative mb-6 overflow-hidden rounded-2xl"
+            (mouseenter)="pauseHero()"
+            (mouseleave)="resumeHero()"
+            data-testid="hero-carousel"
+          >
+            <div class="absolute inset-0 bg-gradient-to-r {{ heroGradient(hero) }}"></div>
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(229,9,20,0.35),transparent_45%)]"></div>
+            <div class="absolute inset-0 bg-gradient-to-r from-black/85 via-black/55 to-black/20"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30"></div>
 
-          <div class="relative flex min-h-[320px] flex-col justify-end p-6 sm:min-h-[420px] sm:p-10">
-            <p class="text-xs uppercase tracking-[0.22em] text-fletnix-muted">Featured</p>
-            <h2 class="heading-font mt-2 max-w-3xl text-4xl font-semibold leading-tight sm:text-6xl">{{ hero.title }}</h2>
+            <div class="relative flex min-h-[320px] flex-col justify-end p-6 sm:min-h-[420px] sm:p-10">
+              <p class="text-xs uppercase tracking-[0.22em] text-fletnix-muted">Featured</p>
+              <h2 class="heading-font mt-2 max-w-3xl text-4xl font-semibold leading-tight sm:text-6xl">{{ hero.title }}</h2>
 
-            <div class="mt-4 flex flex-wrap items-center gap-2 text-xs">
-              <span class="rounded bg-white/10 px-2.5 py-1">{{ hero.type }}</span>
-              @if (hero.rating) {
-                <span class="rounded bg-white/10 px-2.5 py-1">{{ hero.rating }}</span>
-              }
-              @if (hero.duration) {
-                <span class="text-fletnix-muted">{{ hero.duration }}</span>
-              }
-              @if (hero.release_year) {
-                <span class="text-fletnix-muted">{{ hero.release_year }}</span>
-              }
+              <div class="mt-4 flex flex-wrap items-center gap-2 text-xs">
+                <span class="rounded bg-white/10 px-2.5 py-1">{{ hero.type }}</span>
+                @if (hero.rating) {
+                  <span class="rounded bg-white/10 px-2.5 py-1">{{ hero.rating }}</span>
+                }
+                @if (hero.duration) {
+                  <span class="text-fletnix-muted">{{ hero.duration }}</span>
+                }
+                @if (hero.release_year) {
+                  <span class="text-fletnix-muted">{{ hero.release_year }}</span>
+                }
+              </div>
+
+              <p class="mt-4 max-w-2xl text-sm leading-7 text-gray-200 sm:text-base">{{ heroDescription(hero) }}</p>
+
+              <div class="mt-6 flex flex-wrap items-center gap-3">
+                <a [routerLink]="['/show', hero._id]" class="inline-flex items-center gap-2 rounded-lg bg-fletnix-red px-5 py-2.5 text-sm font-medium">
+                  <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+                  Watch now
+                </a>
+                <a [routerLink]="['/show', hero._id]" class="inline-flex items-center gap-2 rounded-lg bg-white/10 px-5 py-2.5 text-sm transition hover:bg-white/20">
+                  More info
+                </a>
+              </div>
             </div>
 
-            <p class="mt-4 max-w-2xl text-sm leading-7 text-gray-200 sm:text-base">{{ heroDescription(hero) }}</p>
+            @if (heroShows.length > 1) {
+              <button
+                (click)="prevHero()"
+                class="absolute left-3 top-1/2 hidden -translate-y-1/2 rounded-full bg-black/45 p-2 text-white transition hover:bg-black/70 sm:inline-flex"
+                aria-label="Previous slide"
+              >
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+              </button>
+              <button
+                (click)="nextHero()"
+                class="absolute right-3 top-1/2 hidden -translate-y-1/2 rounded-full bg-black/45 p-2 text-white transition hover:bg-black/70 sm:inline-flex"
+                aria-label="Next slide"
+              >
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+              </button>
 
-            <div class="mt-6 flex flex-wrap items-center gap-3">
-              <a [routerLink]="['/show', hero._id]" class="inline-flex items-center gap-2 rounded-lg bg-fletnix-red px-5 py-2.5 text-sm font-medium">
-                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
-                Watch now
-              </a>
-              <a [routerLink]="['/show', hero._id]" class="inline-flex items-center gap-2 rounded-lg bg-white/10 px-5 py-2.5 text-sm transition hover:bg-white/20">
-                More info
-              </a>
-            </div>
-          </div>
+              <div class="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
+                @for (slide of heroShows; track slide._id; let i = $index) {
+                  <button
+                    (click)="setHeroIndex(i)"
+                    class="h-2 rounded-full transition-all"
+                    [class.w-6]="i === heroIndex"
+                    [class.w-2]="i !== heroIndex"
+                    [class.bg-fletnix-red]="i === heroIndex"
+                    [class.dot-muted]="i !== heroIndex"
+                    [attr.aria-label]="'Go to slide ' + (i + 1)"
+                  ></button>
+                }
+              </div>
+            }
+          </section>
+        }
 
-          @if (heroShows.length > 1) {
-            <button
-              (click)="prevHero()"
-              class="absolute left-3 top-1/2 hidden -translate-y-1/2 rounded-full bg-black/45 p-2 text-white transition hover:bg-black/70 sm:inline-flex"
-              aria-label="Previous slide"
-            >
-              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round" /></svg>
-            </button>
-            <button
-              (click)="nextHero()"
-              class="absolute right-3 top-1/2 hidden -translate-y-1/2 rounded-full bg-black/45 p-2 text-white transition hover:bg-black/70 sm:inline-flex"
-              aria-label="Next slide"
-            >
-              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6" stroke-linecap="round" stroke-linejoin="round" /></svg>
-            </button>
-
-            <div class="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
-              @for (slide of heroShows; track slide._id; let i = $index) {
-                <button
-                  (click)="setHeroIndex(i)"
-                  class="h-2 rounded-full transition-all"
-                  [class.w-6]="i === heroIndex"
-                  [class.w-2]="i !== heroIndex"
-                  [class.bg-fletnix-red]="i === heroIndex"
-                  [class.dot-muted]="i !== heroIndex"
-                  [attr.aria-label]="'Go to slide ' + (i + 1)"
-                ></button>
+        @if (hasForYouSection()) {
+          <section class="mb-8" data-testid="for-you-section">
+            <h2 class="heading-font mb-4 text-2xl font-semibold">Picked for you</h2>
+            <div class="flex gap-4 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              @for (show of forYouShows; track show._id) {
+                <div class="w-[180px] shrink-0 sm:w-[200px]">
+                  <app-show-card [show]="show" />
+                </div>
               }
             </div>
-          }
-        </section>
+          </section>
+        }
       }
 
       <section class="mb-5 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 class="heading-font text-3xl font-semibold sm:text-4xl">Browse</h1>
-          <p class="mt-1 text-sm text-fletnix-muted">{{ total | number }} titles available</p>
+          @if (isSearching()) {
+            <h1 class="heading-font text-3xl font-semibold sm:text-4xl">Search results</h1>
+            <p class="mt-1 text-sm text-fletnix-muted">{{ total | number }} matches for "{{ search }}"</p>
+          } @else {
+            <h1 class="heading-font text-3xl font-semibold sm:text-4xl">Browse</h1>
+            <p class="mt-1 text-sm text-fletnix-muted">{{ total | number }} titles available</p>
+          }
         </div>
 
         <div class="flex flex-wrap items-center gap-2">

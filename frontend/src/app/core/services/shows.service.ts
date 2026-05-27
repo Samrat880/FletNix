@@ -21,6 +21,7 @@ export class ShowsService {
     language?: string;
     rating?: string;
     sort?: string;
+    personalized?: boolean;
   }): Observable<ApiResponse<ShowsPage>> {
     let params = new HttpParams();
     if (options.page) params = params.set('page', options.page);
@@ -32,6 +33,7 @@ export class ShowsService {
     if (options.language?.trim()) params = params.set('language', options.language.trim());
     if (options.rating?.trim()) params = params.set('rating', options.rating.trim());
     if (options.sort?.trim()) params = params.set('sort', options.sort.trim());
+    if (options.personalized) params = params.set('personalized', '1');
 
     return this.http.get<ApiResponse<ShowsPage>>(this.base, { params });
   }

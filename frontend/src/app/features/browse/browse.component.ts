@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink, ActivatedRoute } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { ShowsService } from '../../core/services/shows.service';
 import { Show, ShowFilterMeta } from '../../core/models/api.model';
@@ -22,8 +22,10 @@ export class BrowseComponent implements OnInit, OnDestroy {
   private readonly showsService = inject(ShowsService);
   private readonly auth = inject(AuthService);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
   shows: Show[] = [];
+  forYouShows: Show[] = [];
   heroShows: Show[] = [];
   heroIndex = 0;
   heroPaused = false;
@@ -65,6 +67,9 @@ export class BrowseComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.search$.pipe(debounceTime(350)).subscribe(() => {
       this.page = 1;
+      if (this.isSearching()) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
       this.load();
     });
 
@@ -77,6 +82,7 @@ export class BrowseComponent implements OnInit, OnDestroy {
     this.loadMeta();
     this.loadRecentViewed();
     this.loadHero();
+    this.loadForYou();
     this.load();
   }
 
@@ -86,6 +92,14 @@ export class BrowseComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.stopHeroRotation();
+  }
+
+  isSearching(): boolean {
+    return this.search.trim().length > 0;
+  }
+
+  hasForYouSection(): boolean {
+    return this.favoriteGenres().length > 0 && this.forYouShows.length > 0;
   }
 
   private loadMeta(): void {
@@ -114,6 +128,21 @@ export class BrowseComponent implements OnInit, OnDestroy {
     });
   }
 
+  private loadForYou(): void {
+    if (!this.favoriteGenres().length) {
+      this.forYouShows = [];
+      return;
+    }
+
+    this.showsService
+      .getShows({ page: 1, limit: 15, personalized: true, sort: 'newest' })
+      .subscribe({
+        next: (res) => {
+          this.forYouShows = res.data.shows;
+        },
+      });
+  }
+
   load(): void {
     this.loading = true;
     this.error = '';
@@ -132,6 +161,12 @@ export class BrowseComponent implements OnInit, OnDestroy {
       })
       .subscribe({
         next: (res) => {
+          if (this.search.trim() && res.data.total === 1 && res.data.shows.length === 1) {
+            this.loading = false;
+            this.router.navigate(['/show', res.data.shows[0]._id]);
+            return;
+          }
+
           this.shows = res.data.shows;
           this.total = res.data.total;
           this.totalPages = res.data.totalPages;
@@ -228,6 +263,10 @@ export class BrowseComponent implements OnInit, OnDestroy {
 
   userName(): string {
     return this.auth.getUserName();
+  }
+
+  favoriteGenres(): string[] {
+    return this.auth.getFavoriteGenres();
   }
 
   userAge(): number | null {

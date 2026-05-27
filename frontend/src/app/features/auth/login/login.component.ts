@@ -37,9 +37,10 @@ export class LoginComponent implements OnInit {
     this.error = '';
     const { email, password } = this.form.getRawValue();
     this.auth.login(email!, password!).subscribe({
-      next: () => {
+      next: (res) => {
         this.loading = false;
-        this.router.navigate(['/browse']);
+        const destination = res.data.user.preferencesCompleted ? '/browse' : '/preferences';
+        this.router.navigate([destination]);
       },
       error: (err) => {
         this.loading = false;

@@ -2,7 +2,16 @@ import * as showsService from "./shows.service.js";
 import ApiResponse from "../../common/utils/api-response.js";
 
 export const listShows = async (req, res) => {
-  const { page, limit, type, search, country, year, language, rating, sort } = req.query;
+  const { page, limit, type, search, country, year, language, rating, sort, genre, personalized } = req.query;
+
+  let genresToApply;
+  if (!search?.trim()) {
+    if (personalized === "1" && req.user.favoriteGenres?.length) {
+      genresToApply = req.user.favoriteGenres;
+    } else if (genre?.trim()) {
+      genresToApply = [genre.trim()];
+    }
+  }
 
   const result = await showsService.getShows({
     page,
@@ -15,6 +24,7 @@ export const listShows = async (req, res) => {
     rating,
     sort,
     userAge: req.user.age,
+    genres: genresToApply,
   });
 
   ApiResponse.ok(res, "Shows fetched", result);

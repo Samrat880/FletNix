@@ -1,0 +1,54 @@
+<div class="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-10">
+  <div class="absolute inset-0 bg-[radial-gradient(circle_at_10%_10%,rgba(229,9,20,0.2),transparent_35%),radial-gradient(circle_at_85%_90%,rgba(37,99,235,0.18),transparent_32%)]"></div>
+
+  <div class="glass-panel relative z-10 w-full max-w-3xl rounded-2xl p-8 shadow-panel">
+    <p class="mb-2 text-xs uppercase tracking-[0.24em] text-fletnix-muted">Personalize FletNix</p>
+    <h1 class="heading-font text-3xl font-semibold text-white md:text-4xl">What do you like to watch?</h1>
+    <p class="mt-2 text-sm text-fletnix-muted">
+      Pick at least one genre. We will use this to tailor your browse and hero picks.
+    </p>
+
+    @if (loading) {
+      <p class="mt-8 text-sm text-fletnix-muted">Loading genres...</p>
+    } @else {
+      <div class="mt-8 flex flex-wrap gap-2.5" data-testid="genre-list">
+        @for (genre of genres; track genre) {
+          <button
+            type="button"
+            (click)="toggleGenre(genre)"
+            [attr.data-testid]="'genre-' + genre"
+            class="rounded-full border px-4 py-2 text-sm transition"
+            [ngClass]="
+              isSelected(genre)
+                ? 'border-fletnix-red bg-fletnix-red/20 text-white shadow-glow'
+                : 'border-fletnix-line bg-fletnix-panel text-fletnix-muted hover:border-fletnix-red/60'
+            "
+          >
+            {{ genre }}
+          </button>
+        }
+      </div>
+    }
+
+    @if (error) {
+      <p class="mt-6 rounded-lg border border-red-500/35 bg-red-500/10 px-3 py-2 text-sm text-red-300" data-testid="preferences-error">
+        {{ error }}
+      </p>
+    }
+
+    <div class="mt-8 flex items-center justify-between gap-4">
+      <p class="text-sm text-fletnix-muted">
+        {{ selected.size }} selected (max 10)
+      </p>
+      <button
+        type="button"
+        (click)="submit()"
+        [disabled]="saving || selected.size === 0"
+        data-testid="preferences-submit"
+        class="rounded-xl bg-fletnix-red px-6 py-3 text-sm font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        {{ saving ? 'Saving...' : 'Continue' }}
+      </button>
+    </div>
+  </div>
+</div>

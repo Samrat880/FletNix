@@ -36,6 +36,16 @@ export class AuthService {
       );
   }
 
+  savePreferences(genres: string[]): Observable<ApiResponse<User>> {
+    return this.http.put<ApiResponse<User>>(`${this.base}/preferences`, { genres }).pipe(
+      tap((res) => this.setUser(res.data)),
+    );
+  }
+
+  hasCompletedPreferences(): boolean {
+    return this.getUser()?.preferencesCompleted === true;
+  }
+
   logout(): Observable<ApiResponse<unknown>> {
     return this.http
       .post<ApiResponse<unknown>>(`${this.base}/logout`, {}, { withCredentials: true })
@@ -127,6 +137,10 @@ export class AuthService {
       return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
     }
     return name.slice(0, 2).toUpperCase();
+  }
+
+  getFavoriteGenres(): string[] {
+    return this.getUser()?.favoriteGenres || [];
   }
 
   getUserEmail(): string | null {

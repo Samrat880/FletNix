@@ -54,6 +54,11 @@ const resetPassword = async (req, res) => {
     const user = await authService.resetPassword(req.params.token, req.body.password, req.body.passwordConfirm)
     ApiResponse.ok(res, "Password reset successfully", user)
 }
+
+const savePreferences = async (req, res) => {
+    const user = await authService.savePreferences(req.user.id, req.body.genres)
+    ApiResponse.ok(res, "Preferences saved", user)
+}
  
 
 export {
@@ -64,5 +69,6 @@ export {
     getMe,
     forgotPassword,
     resetPassword,
+    savePreferences,
 }
 

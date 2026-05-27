@@ -7,6 +7,7 @@ test.describe('FletNix UI', () => {
     await page.goto('/login');
     await expect(page.getByTestId('login-title')).toBeVisible();
     await expect(page.getByTestId('login-email')).toBeVisible();
+    await expect(page.getByTestId('site-footer')).toBeVisible();
   });
 
   test('register page renders', async ({ page }) => {
@@ -17,6 +18,11 @@ test.describe('FletNix UI', () => {
 
   test('browse requires auth redirect', async ({ page }) => {
     await page.goto('/browse');
+    await expect(page).toHaveURL(/login/);
+  });
+
+  test('preferences requires auth redirect', async ({ page }) => {
+    await page.goto('/preferences');
     await expect(page).toHaveURL(/login/);
   });
 

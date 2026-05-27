@@ -1,0 +1,49 @@
+<footer class="mt-auto border-t border-white/10 bg-fletnix-dark/80" data-testid="site-footer">
+  <div class="mx-auto max-w-[1700px] px-4 py-10 sm:px-6 lg:px-8">
+    <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+      <div>
+        <p class="heading-font text-xl font-semibold text-white">FletNix</p>
+        <p class="mt-2 max-w-xs text-sm leading-6 text-fletnix-muted">
+          What to watch — a Netflix-style catalog demo with JWT auth, search, and age-based filtering.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-[0.18em] text-fletnix-muted">Explore</p>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a routerLink="/browse" class="text-gray-300 transition hover:text-white">Browse</a></li>
+          <li><a routerLink="/login" class="text-gray-300 transition hover:text-white">Sign in</a></li>
+          <li><a routerLink="/register" class="text-gray-300 transition hover:text-white">Create account</a></li>
+          <li>
+            <a [href]="githubUrl" target="_blank" rel="noopener noreferrer" class="text-gray-300 transition hover:text-white">
+              GitHub
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-[0.18em] text-fletnix-muted">Legal</p>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><span class="text-gray-300">Privacy Policy</span></li>
+          <li><span class="text-gray-300">Terms of Use</span></li>
+          <li><span class="text-gray-300">Cookie Preferences</span></li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="text-xs uppercase tracking-[0.18em] text-fletnix-muted">Project</p>
+        <ul class="mt-3 space-y-2 text-sm text-gray-300">
+          <li>License: <span class="text-white">ISC</span></li>
+          <li>Stack: Angular, Node.js, MongoDB</li>
+          <li>Catalog: Netflix titles dataset (demo)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-10 flex flex-col gap-3 border-t border-white/10 pt-6 text-xs text-fletnix-muted sm:flex-row sm:items-center sm:justify-between">
+      <p>&copy; {{ currentYear }} FletNix. All rights reserved.</p>
+      <p>For educational and portfolio use. Not affiliated with Netflix.</p>
+    </div>
+  </div>
+</footer>

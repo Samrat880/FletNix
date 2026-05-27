@@ -13,7 +13,20 @@ const parseOptionalInt = (value) => {
 
 const escapeRegex = (value = "") => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-const buildFilter = ({ type, search, userAge, country, year, language, rating }) => {
+const uniqueSorted = (items) =>
+  items
+    .filter(Boolean)
+    .filter((x, i, arr) => arr.indexOf(x) === i)
+    .sort((a, b) => a.localeCompare(b));
+
+const splitListedInTags = (entries) =>
+  entries
+    .filter(Boolean)
+    .flatMap((entry) => String(entry).split(","))
+    .map((x) => x.trim())
+    .filter(Boolean);
+
+const buildFilter = ({ type, search, userAge, country, year, language, rating, genres }) => {
   const filter = {};
 
   if (typeof userAge === "number" && userAge < 18) {
@@ -50,6 +63,12 @@ const buildFilter = ({ type, search, userAge, country, year, language, rating })
     }
   }
 
+  if (genres?.length) {
+    filter.$or = genres.map((g) => ({
+      listed_in: { $regex: escapeRegex(g), $options: "i" },
+    }));
+  }
+
   return filter;
 };
 
@@ -71,6 +90,7 @@ export const getShows = async ({
   language,
   rating,
   sort,
+  genres,
 }) => {
   const pageNum = parsePositiveInt(page, 1);
   const limitNum = parsePositiveInt(limit, 15);
@@ -84,6 +104,7 @@ export const getShows = async ({
     year,
     language,
     rating,
+    genres,
   });
 
   const sortQuery = sortMap[sort] || sortMap.newest;
@@ -112,18 +133,14 @@ export const getFilterMeta = async ({ userAge }) => {
     Show.distinct("listed_in", ageFilter),
   ]);
 
+  const listedTags = splitListedInTags(listedIn);
+
   return {
     countries: countries.filter(Boolean).sort((a, b) => a.localeCompare(b)).slice(0, 120),
     years: years.filter(Boolean).sort((a, b) => b - a),
     ratings: ratings.filter(Boolean).sort((a, b) => a.localeCompare(b)),
-    languages: listedIn
-      .filter(Boolean)
-      .flatMap((entry) => String(entry).split(","))
-      .map((x) => x.trim())
-      .filter(Boolean)
-      .filter((x, i, arr) => arr.indexOf(x) === i)
-      .sort((a, b) => a.localeCompare(b))
-      .slice(0, 80),
+    languages: uniqueSorted(listedTags).slice(0, 80),
+    genres: uniqueSorted(listedTags).slice(0, 60),
   };
 };
 

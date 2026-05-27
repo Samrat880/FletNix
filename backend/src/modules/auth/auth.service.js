@@ -118,6 +118,21 @@ const getMe = async(userId) => {
     return user;
 }
 
+const savePreferences = async (userId, genres) => {
+    const user = await User.findById(userId);
+    if (!user) throw ApiError.notFound("User not found");
+
+    user.favoriteGenres = genres;
+    user.preferencesCompleted = true;
+    await user.save();
+
+    const userObj = user.toObject();
+    delete userObj.password;
+    delete userObj.refreshToken;
+
+    return userObj;
+}
+
 
 
 export { 
@@ -127,5 +142,6 @@ export {
      logout, 
      forgotPassword, 
     resetPassword,
-     getMe 
+     getMe,
+     savePreferences,
 }

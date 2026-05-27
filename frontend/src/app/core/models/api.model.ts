@@ -11,6 +11,8 @@ export interface User {
   age: number;
   role: string;
   isVerified: boolean;
+  favoriteGenres?: string[];
+  preferencesCompleted?: boolean;
 }
 
 export interface LoginData {
@@ -46,4 +48,5 @@ export interface ShowFilterMeta {
   years: number[];
   ratings: string[];
   languages: string[];
+  genres: string[];
 }
