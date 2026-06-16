@@ -19,6 +19,7 @@ export class LoginComponent implements OnInit {
   error = '';
   success = '';
   loading = false;
+  showPassword = false;
 
   ngOnInit(): void {
     if (this.route.snapshot.queryParamMap.get('registered') === '1') {
