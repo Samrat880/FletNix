@@ -1,5 +1,10 @@
 <a [routerLink]="['/show', show._id]" class="group block" data-testid="show-card">
-  <div class="relative aspect-[16/10] overflow-hidden rounded-lg bg-gradient-to-br {{ gradientClasses() }} transition duration-300 group-hover:scale-[1.03] group-hover:brightness-110">
+  <div class="relative aspect-[16/10] overflow-hidden rounded-lg bg-gradient-to-br {{ gradientClasses() }} ring-1 ring-white/5 transition duration-300 group-hover:scale-[1.03] group-hover:brightness-110 group-hover:ring-fletnix-red/40">
+    @if (show.rating) {
+      <span class="absolute right-2 top-2 z-10 rounded-md bg-black/60 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white backdrop-blur-sm">
+        {{ show.rating }}
+      </span>
+    }
     <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.14),transparent_55%)]"></div>
     <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 transition group-hover:opacity-100"></div>
 
