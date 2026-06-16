@@ -19,7 +19,16 @@
 
       <div class="space-y-1.5">
         <label class="text-sm text-fletnix-muted">Password</label>
-        <input type="password" formControlName="password" data-testid="register-password" class="w-full rounded-xl border border-fletnix-line bg-fletnix-dark/70 px-4 py-3 text-sm text-white outline-none transition focus:border-fletnix-red focus:shadow-glow" />
+        <div class="relative">
+          <input [type]="showPassword ? 'text' : 'password'" formControlName="password" data-testid="register-password" class="w-full rounded-xl border border-fletnix-line bg-fletnix-dark/70 px-4 py-3 pr-11 text-sm text-white outline-none transition focus:border-fletnix-red focus:shadow-glow" />
+          <button type="button" (click)="showPassword = !showPassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-fletnix-muted transition hover:text-white" [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
+            @if (showPassword) {
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3l18 18M10.58 10.58A2 2 0 0012 14a2 2 0 001.41-3.41M9.88 4.24A10.94 10.94 0 0112 5c5 0 9.27 3.11 11 7-1.02 2.13-2.67 3.94-4.66 5.11M6.1 6.1C3.67 7.56 1.73 9.61 1 12c1.73 3.89 6 7 11 7 1.05 0 2.06-.14 3-.4" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            } @else {
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke-linecap="round" stroke-linejoin="round" /><circle cx="12" cy="12" r="3" /></svg>
+            }
+          </button>
+        </div>
       </div>
 
       <div class="space-y-1.5">
