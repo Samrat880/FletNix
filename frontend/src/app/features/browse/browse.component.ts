@@ -8,6 +8,7 @@ import { Show, ShowFilterMeta } from '../../core/models/api.model';
 import { ShowCardComponent } from '../../shared/show-card/show-card.component';
 import { PaginationComponent } from '../../shared/pagination/pagination.component';
 import { showGradient, truncateText } from '../../shared/utils/show-visual.util';
+import { WatchlistService } from '../../core/services/watchlist.service';
 import { debounceTime, Subject } from 'rxjs';
 
 type TypeFilter = 'All' | 'Movie' | 'TV Show';
@@ -21,6 +22,7 @@ type TypeFilter = 'All' | 'Movie' | 'TV Show';
 export class BrowseComponent implements OnInit, OnDestroy {
   private readonly showsService = inject(ShowsService);
   private readonly auth = inject(AuthService);
+  private readonly watchlist = inject(WatchlistService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
@@ -51,11 +53,13 @@ export class BrowseComponent implements OnInit, OnDestroy {
   selectedLanguage = '';
 
   recentViewed: Show[] = [];
+  watchlistCount = 0;
 
-  readonly navItems: { label: string; action: 'browse' | 'movie' | 'tv' | 'newest' | 'rating' }[] = [
+  readonly navItems: { label: string; action: 'browse' | 'movie' | 'tv' | 'newest' | 'rating' | 'watchlist' }[] = [
     { label: 'Browse', action: 'browse' },
     { label: 'Movies', action: 'movie' },
     { label: 'TV Shows', action: 'tv' },
+    { label: 'My Watchlist', action: 'watchlist' },
     { label: 'Trending', action: 'newest' },
     { label: 'Top Rated', action: 'rating' },
   ];
@@ -84,6 +88,10 @@ export class BrowseComponent implements OnInit, OnDestroy {
     this.loadHero();
     this.loadForYou();
     this.load();
+
+    this.watchlist.watchlist$.subscribe((items) => {
+      this.watchlistCount = items.length;
+    });
   }
 
   refreshRecentViewed(): void {
@@ -199,9 +207,15 @@ export class BrowseComponent implements OnInit, OnDestroy {
     this.load();
   }
 
-  onNavClick(item: { label: string; action: 'browse' | 'movie' | 'tv' | 'newest' | 'rating' }): void {
+  onNavClick(item: { label: string; action: 'browse' | 'movie' | 'tv' | 'newest' | 'rating' | 'watchlist' }): void {
     this.activeNav = item.label;
     this.mobileSidebarOpen = false;
+
+    if (item.action === 'watchlist') {
+      this.router.navigate(['/watchlist']);
+      return;
+    }
+
     this.page = 1;
     this.search = '';
 

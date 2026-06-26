@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ShowsService } from '../../core/services/shows.service';
 import { AuthService } from '../../core/services/auth.service';
+import { WatchlistService } from '../../core/services/watchlist.service';
+import { ToastService } from '../../core/services/toast.service';
 import { Show } from '../../core/models/api.model';
 import { showGradient, truncateText } from '../../shared/utils/show-visual.util';
 
@@ -16,6 +18,8 @@ export class DetailComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly showsService = inject(ShowsService);
   private readonly auth = inject(AuthService);
+  private readonly watchlist = inject(WatchlistService);
+  private readonly toast = inject(ToastService);
 
   show: Show | null = null;
   loading = true;
@@ -77,5 +81,20 @@ export class DetailComponent implements OnInit {
 
   scrollToDetails(): void {
     document.getElementById('show-details')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  isInWatchlist(): boolean {
+    return this.show ? this.watchlist.isSaved(this.show._id) : false;
+  }
+
+  toggleWatchlist(): void {
+    if (!this.show) return;
+
+    const added = this.watchlist.toggle(this.show);
+    if (added) {
+      this.toast.success(`Added "${this.show.title}" to your watchlist`);
+    } else {
+      this.toast.info(`Removed "${this.show.title}" from your watchlist`);
+    }
   }
 }
