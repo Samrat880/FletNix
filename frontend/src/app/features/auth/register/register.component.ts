@@ -17,6 +17,7 @@ export class RegisterComponent {
 
   error = '';
   loading = false;
+  showPassword = false;
 
   form = this.fb.group({
     name: [''],

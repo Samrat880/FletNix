@@ -249,7 +249,11 @@
         } @else if (error) {
           <p class="py-16 text-center text-red-300">{{ error }}</p>
         } @else if (shows.length === 0) {
-          <p class="py-16 text-center text-fletnix-muted" data-testid="no-results">No shows found.</p>
+          <div class="py-16 text-center" data-testid="no-results">
+            <p class="heading-font text-xl font-semibold text-white">No titles found</p>
+            <p class="mt-2 text-sm text-fletnix-muted">Try clearing filters or searching with a different keyword.</p>
+            <button (click)="clearFilters(); search = ''; load()" class="mt-4 rounded-lg bg-white/10 px-4 py-2 text-sm transition hover:bg-white/20">Reset browse</button>
+          </div>
         } @else {
           <div class="grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5" data-testid="shows-grid">
             @for (show of shows; track show._id) {
