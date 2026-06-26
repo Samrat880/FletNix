@@ -18,6 +18,7 @@
 
         <nav class="hidden items-center gap-6 text-xs uppercase tracking-[0.16em] text-gray-300 md:flex">
           <a routerLink="/browse" class="hover:text-white">Home</a>
+          <a routerLink="/watchlist" class="hover:text-white">Watchlist</a>
           <a routerLink="/browse" [queryParams]="{ type: 'Movie' }" class="hover:text-white">Movies</a>
           <a routerLink="/browse" [queryParams]="{ type: 'TV Show' }" class="hover:text-white">TV Shows</a>
         </nav>
@@ -55,6 +56,18 @@
           <button type="button" (click)="scrollToDetails()" class="inline-flex items-center gap-2 rounded bg-fletnix-red px-6 py-2.5 text-sm font-semibold">
             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
             More details
+          </button>
+          <button
+            type="button"
+            (click)="toggleWatchlist()"
+            data-testid="detail-watchlist-toggle"
+            class="inline-flex items-center gap-2 rounded px-5 py-2.5 text-sm font-medium transition"
+            [ngClass]="isInWatchlist() ? 'bg-fletnix-red' : 'bg-white/15 hover:bg-white/25'"
+          >
+            <svg class="h-4 w-4" viewBox="0 0 24 24" [attr.fill]="isInWatchlist() ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2">
+              <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 000-7.78z" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            {{ isInWatchlist() ? 'In watchlist' : 'Add to watchlist' }}
           </button>
           <a routerLink="/browse" class="inline-flex items-center gap-2 rounded bg-white/15 px-5 py-2.5 text-sm transition hover:bg-white/25" data-testid="back-to-browse">
             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

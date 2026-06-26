@@ -27,6 +27,12 @@ export const routes: Routes = [
       import('./features/browse/browse.component').then((m) => m.BrowseComponent),
   },
   {
+    path: 'watchlist',
+    canActivate: [authGuard, preferencesGuard],
+    loadComponent: () =>
+      import('./features/watchlist/watchlist.component').then((m) => m.WatchlistComponent),
+  },
+  {
     path: 'show/:id',
     canActivate: [authGuard, preferencesGuard],
     loadComponent: () =>

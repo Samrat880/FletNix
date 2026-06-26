@@ -1,0 +1,36 @@
+<div class="min-h-screen bg-fletnix-ink text-white">
+  <div class="mx-auto max-w-[1700px] px-4 py-6 sm:px-6">
+    <header class="mb-8 flex flex-wrap items-center justify-between gap-4">
+      <div>
+        <a routerLink="/browse" class="heading-font text-2xl font-semibold text-fletnix-red">FletNix</a>
+        <h1 class="heading-font mt-3 text-3xl font-semibold sm:text-4xl" data-testid="watchlist-title">My Watchlist</h1>
+        <p class="mt-1 text-sm text-fletnix-muted">{{ items.length }} saved title{{ items.length === 1 ? '' : 's' }}</p>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <a routerLink="/browse" class="rounded-lg bg-white/10 px-4 py-2 text-sm transition hover:bg-white/20">Back to Browse</a>
+        @if (items.length > 0) {
+          <button type="button" (click)="clearAll()" data-testid="watchlist-clear" class="rounded-lg border border-white/15 px-4 py-2 text-sm text-fletnix-muted transition hover:border-red-500/50 hover:text-red-300">
+            Clear all
+          </button>
+        }
+        <div class="flex h-9 w-9 items-center justify-center rounded-full bg-fletnix-red text-xs font-semibold">{{ userInitials() }}</div>
+        <button type="button" (click)="logout()" class="text-sm text-fletnix-muted hover:text-white">Logout</button>
+      </div>
+    </header>
+
+    @if (items.length === 0) {
+      <div class="rounded-2xl border border-dashed border-white/15 py-20 text-center" data-testid="watchlist-empty">
+        <p class="heading-font text-xl font-semibold">Nothing saved yet</p>
+        <p class="mt-2 text-sm text-fletnix-muted">Tap the heart on any title while browsing to build your list.</p>
+        <a routerLink="/browse" class="mt-6 inline-block rounded-lg bg-fletnix-red px-5 py-2.5 text-sm font-medium">Browse titles</a>
+      </div>
+    } @else {
+      <div class="grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5" data-testid="watchlist-grid">
+        @for (show of items; track show._id) {
+          <app-show-card [show]="show" />
+        }
+      </div>
+    }
+  </div>
+</div>

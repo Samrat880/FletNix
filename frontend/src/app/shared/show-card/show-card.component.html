@@ -1,5 +1,17 @@
 <a [routerLink]="['/show', show._id]" class="group block" data-testid="show-card">
   <div class="relative aspect-[16/10] overflow-hidden rounded-lg bg-gradient-to-br {{ gradientClasses() }} transition duration-300 group-hover:scale-[1.03] group-hover:brightness-110">
+    <button
+      type="button"
+      (click)="toggleWatchlist($event)"
+      class="absolute right-2 top-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition hover:bg-black/70"
+      [attr.aria-label]="isSaved() ? 'Remove from watchlist' : 'Add to watchlist'"
+      [attr.data-testid]="'watchlist-toggle-' + show._id"
+    >
+      <svg class="h-4 w-4" viewBox="0 0 24 24" [attr.fill]="isSaved() ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2">
+        <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 000-7.78z" stroke-linecap="round" stroke-linejoin="round" [class.text-fletnix-red]="isSaved()" />
+      </svg>
+    </button>
+
     <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.14),transparent_55%)]"></div>
     <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 transition group-hover:opacity-100"></div>
 
